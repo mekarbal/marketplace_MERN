@@ -19,9 +19,13 @@ exports.sellerRegister = async (req, res, next) => {
     full_name: req.body.full_name,
     email: req.body.email,
     isValid: true,
+    type: "Starter",
     phone: req.body.phone,
     password: hashedPassword,
     address: req.body.address,
+    turnOver: 0,
+    productsCount: 0,
+    identity: req.body.identity,
   });
 
   try {
@@ -90,5 +94,27 @@ exports.getAllSellers = async (req, res, next) => {
     res.json(sellers);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+exports.sellerPack = async (req, res, next) => {
+  const token = req.header("auth-token");
+
+  const id_seller = jwt.verify(token, process.env.SELLER_TOKEN)._id;
+
+  const type = req.body.type;
+
+  const seller = await Seller.findById({ _id: id_seller });
+  if (type == "Pro") {
+    seller.type = type;
+    seller.turnOver += 5000;
+
+    const updateSeller = await seller.save();
+    res.status(201).send(updateSeller);
+  } else if (type == "Expert") {
+    seller.type = type;
+    seller.turnOver += 20000;
+    const updateSeller = await seller.save();
+    res.status(201).send(updateSeller);
   }
 };

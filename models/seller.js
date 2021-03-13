@@ -9,6 +9,9 @@ const sellerSchema = new mongoose.Schema(
     isValid: {
       type: Boolean,
     },
+    type: {
+      type: String,
+    },
     email: {
       type: String,
       required: true,
@@ -23,6 +26,16 @@ const sellerSchema = new mongoose.Schema(
     },
     address: {
       type: String,
+    },
+    turnOver: {
+      type: Number,
+    },
+    productsCount: {
+      type: Number,
+    },
+    identity: {
+      type: String,
+      required: true,
     },
   },
   {
