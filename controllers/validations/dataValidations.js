@@ -10,12 +10,12 @@ const sellerValidations = (data) => {
   });
   return sellerValidation.validate(data);
 };
-const sellerLoginValidations = (data) => {
-  const sellerLoginValidation = Joi.object({
+const loginValidations = (data) => {
+  const LoginValidation = Joi.object({
     email: Joi.string().email().required(),
     password: Joi.string().min(6).required(),
   });
-  return sellerLoginValidation.validate(data);
+  return LoginValidation.validate(data);
 };
 
 const buyerValidations = (data) => {
@@ -28,15 +28,21 @@ const buyerValidations = (data) => {
   });
   return buyerValidation.validate(data);
 };
-const buyerLoginValidations = (data) => {
-  const sellerLoginValidation = Joi.object({
+const adminValidations = (data) => {
+  const adminValidation = Joi.object({
+    full_name: Joi.string().min(6).required(),
     email: Joi.string().email().required(),
+    phone: Joi.string().min(10).max(14).required(),
     password: Joi.string().min(6).required(),
+    address: Joi.string().required(),
   });
-  return sellerLoginValidation.validate(data);
+  return adminValidation.validate(data);
 };
 
+
+
+
 exports.sellerValidations = sellerValidations;
-exports.sellerLoginValidations = sellerLoginValidations;
+exports.loginValidations = loginValidations;
 exports.buyerValidations = buyerValidations;
-exports.buyerLoginValidations = buyerLoginValidations;
+exports.adminValidations = adminValidations;

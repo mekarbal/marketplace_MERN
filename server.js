@@ -4,6 +4,7 @@ const app = express();
 const db = require("./config/configs");
 const sellerRouter = require("./routes/sellerRouter");
 const buyerRouter = require("./routes/buyerRouter");
+const adminRouter=require("./routes/adminRouter")
 app.use(express.json());
 
 db.on("error", (err) => console.log(err));
@@ -24,7 +25,7 @@ app.use(function (req, res, next) {
 
 app.use("/seller", sellerRouter);
 app.use("/buyer", buyerRouter);
-
+app.use('/admin',adminRouter);
 app.listen(process.env.PORT, () => {
   console.log("connected to server " + process.env.PORT);
 });

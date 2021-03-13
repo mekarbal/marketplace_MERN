@@ -1,12 +1,12 @@
 const mongoose = require("mongoose");
 
-const buyerSchema = new mongoose.Schema(
+const adminSchema = new mongoose.Schema(
   {
     full_name: {
       type: String,
       required: true,
     },
-    isValid: {
+    isAdmin: {
       type: Boolean,
     },
     email: {
@@ -30,4 +30,4 @@ const buyerSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model("Buyer", buyerSchema);
+module.exports = mongoose.model("Admin", adminSchema);

@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {
   sellerValidations,
-  sellerLoginValidations,
+  loginValidations,
 } = require("./validations/dataValidations");
 exports.sellerRegister = async (req, res, next) => {
   const { error } = sellerValidations(req.body);
@@ -52,7 +52,7 @@ exports.resetPassword = async (req, res, next) => {
 };
 
 exports.sellerLogin = async (req, res, next) => {
-  const { error } = sellerLoginValidations(req.body);
+  const { error } = loginValidations(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const seller = await Seller.findOne({ email: req.body.email });

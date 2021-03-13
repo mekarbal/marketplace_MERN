@@ -4,7 +4,7 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const {
   buyerValidations,
-  buyerLoginValidations,
+  loginValidations,
 } = require("./validations/dataValidations");
 
 exports.buyerRegister = async (req, res, next) => {
@@ -33,27 +33,8 @@ exports.buyerRegister = async (req, res, next) => {
   }
 };
 
-// exports.resetPassword = async (req, res, next) => {
-//   const token = req.header("auth-token");
-
-//   const email = jwt.verify(token, process.env.SELLER_TOKEN).email;
-
-//   const salt = await bcrypt.genSalt(10);
-//   const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
-//   const seller = await Seller.findOne({ email: email });
-
-//   if (!seller) {
-//     res.status(404).send({ message: "Seller not found" });
-//   } else {
-//     seller.password = hashedPassword;
-//     const newPass = await seller.save();
-//     res.status(201).send(newPass);
-//   }
-// };
-
 exports.buyerLogin = async (req, res, next) => {
-  const { error } = buyerLoginValidations(req.body);
+  const { error } = loginValidations(req.body);
   if (error) return res.status(400).send(error.details[0].message);
 
   const buyer = await Buyer.findOne({ email: req.body.email });
