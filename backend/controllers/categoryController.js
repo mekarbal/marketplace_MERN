@@ -15,7 +15,7 @@ exports.categoryRegisterer = async (req, res, next) => {
 exports.categoryDelete = async (req, res, next) => {
   try {
     const categoryDelete = await Category.deleteOne({
-      _id: req.body.idCategory,
+      _id: req.params.id
     });
     res.status(201).send(categoryDelete);
   } catch (error) {

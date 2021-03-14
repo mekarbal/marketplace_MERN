@@ -8,6 +8,7 @@ const adminRouter = require("./routes/adminRouter");
 const adsRouter = require("./routes/adsRouter");
 const categoryRouter = require("./routes/categoryRouter");
 const productRouter = require("./routes/productRouter");
+const cors = require("cors");
 app.use(express.json());
 
 db.on("error", (err) => console.log(err));
@@ -30,8 +31,8 @@ app.use("/seller", sellerRouter);
 app.use("/buyer", buyerRouter);
 app.use("/admin", adminRouter);
 app.use("/ads", adsRouter);
-app.use("/category", categoryRouter)
-app.use('/product', productRouter);
+app.use("/category", categoryRouter);
+app.use("/product", productRouter);
 app.listen(process.env.PORT, () => {
   console.log("connected to server " + process.env.PORT);
 });
