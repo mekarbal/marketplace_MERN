@@ -8,6 +8,7 @@ const buyerSchema = new mongoose.Schema(
     },
     isValid: {
       type: Boolean,
+      default:false
     },
     email: {
       type: String,
@@ -20,6 +21,10 @@ const buyerSchema = new mongoose.Schema(
     password: {
       type: String,
       required: true,
+    },
+    devise: {
+      type: String,
+      default: "USD",
     },
     address: {
       type: String,

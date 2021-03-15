@@ -5,13 +5,19 @@ const jwt = require("jsonwebtoken");
 exports.productRegister = async (req, res, next) => {
   const token = req.header("auth-token");
   const id_seller = jwt.verify(token, process.env.SELLER_TOKEN)._id;
+  // console.log(req.files[0]);
+  var pictures = [];
+  for (let i = 0; i < req.files.length; i++) {
+    pictures.push(req.files[i].filename);
+  }
+  // console.log(pictures)
   const newProduct = new Product({
     name: req.body.name,
     description: req.body.description,
     id_category: req.body.id_category,
     id_seller: id_seller,
     price: req.body.price,
-    picture: req.body.picture,
+    picture: pictures,
   });
   try {
     const product = await newProduct.save();
@@ -32,18 +38,22 @@ exports.getAllProducts = async (req, res, next) => {
 exports.productUpdated = async (req, res, next) => {
   const token = req.header("auth-token");
   const id_seller = jwt.verify(token, process.env.SELLER_TOKEN)._id;
-
+  var pictures = [];
+  for (let i = 0; i < req.files.length; i++) {
+    pictures.push(req.files[i].filename);
+  }
   const product = await Products.findById({ _id: req.params.id });
+
   if (!product) {
     res.status(404).send({ message: "Product not found" });
   }
 
   product.name = req.body.name;
   product.price = req.body.price;
-  product.description = req.body.description;
-  product.picture = req.body.picture;
-  product.id_seller = id_seller;
-  product.id_category = req.body.id_category;
+  // product.description = req.body.description;
+  product.picture = pictures;
+  // product.id_seller = id_seller;
+  // product.id_category = req.body.id_category;
 
   try {
     const newProduct = await product.save();

@@ -6,7 +6,11 @@ const {
   sellerValidations,
   loginValidations,
 } = require("./validations/dataValidations");
+const { randomPassword, sendMail } = require("./validations/methods");
+
 exports.sellerRegister = async (req, res, next) => {
+  const tempPassword = randomPassword(6);
+  req.body.password = tempPassword;
   const { error } = sellerValidations(req.body);
   if (error) return res.status(400).send(error.details[0].message);
   const emailExist = await Seller.findOne({ email: req.body.email });
@@ -18,7 +22,6 @@ exports.sellerRegister = async (req, res, next) => {
   const seller = new Seller({
     full_name: req.body.full_name,
     email: req.body.email,
-    isValid: true,
     type: "Starter",
     phone: req.body.phone,
     password: hashedPassword,
@@ -30,6 +33,10 @@ exports.sellerRegister = async (req, res, next) => {
 
   try {
     const savedSeller = await seller.save();
+    const teminfo = {
+      tempPassword,
+    };
+    sendMail(teminfo);
     res.send(savedSeller);
   } catch (error) {
     res.status(400).send(error);
@@ -38,20 +45,25 @@ exports.sellerRegister = async (req, res, next) => {
 
 exports.resetPassword = async (req, res, next) => {
   const token = req.header("auth-token");
+  const tokenDecode = jwt.verify(token, process.env.SELLER_TOKEN);
 
-  const email = jwt.verify(token, process.env.SELLER_TOKEN).email;
-
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
-  const seller = await Seller.findOne({ email: email });
-
-  if (!seller) {
-    res.status(404).send({ message: "Seller not found" });
-  } else {
-    seller.password = hashedPassword;
-    const newPass = await seller.save();
-    res.status(201).send(newPass);
+  const { password, newPassword } = req.body;
+  try {
+    const seller = await Seller.findOne({ email: tokenDecode.email });
+    if (seller) {
+      bcrypt.compare(password, seller.password, async (err, result) => {
+        if (result) {
+          const hashedPassword = await bcrypt.hash(newPassword, 10);
+          seller.password = hashedPassword;
+          const newPass = await seller.save();
+          res.status(201).send(newPass);
+        } else {
+          res.status(401).send("password incorrect check your email");
+        }
+      });
+    }
+  } catch (error) {
+    console.log(error);
   }
 };
 

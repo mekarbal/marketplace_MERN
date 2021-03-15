@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Redirect } from "react";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
 import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import AddCategory from "./AddCategory";
-function Categories() {
+import UpdateCat from "./UpdateCat";
+function Categories({ history }) {
   const [categories, setCategories] = useState([]);
 
   const getAllCategories = async () => {
@@ -15,7 +16,6 @@ function Categories() {
       })
       .catch((err) => console.log(err));
   };
-
   const deleteCat = async (id) => {
     console.log(id);
 
@@ -27,10 +27,15 @@ function Categories() {
       .catch((err) => console.log(err));
   };
 
+  const updateCat = async (id) => {
+    history.push("/admin/category/" + id);
+  };
+
   useEffect(() => {
     getAllCategories();
-  }, [categories]);
-
+    console.log(categories);
+  }, []);
+  
   return (
     <div className="container">
       <AddCategory />
@@ -54,7 +59,11 @@ function Categories() {
                   >
                     <DeleteIcon />
                   </button>
-                  <button type="submit" className="btn btn-outline-success ">
+                  <button
+                    type="submit"
+                    className="btn btn-outline-success "
+                    onClick={() => updateCat(item._id)}
+                  >
                     <EditIcon />
                   </button>
                 </td>

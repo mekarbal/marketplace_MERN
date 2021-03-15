@@ -8,7 +8,6 @@ const productSchema = new mongoose.Schema(
     },
     description: {
       type: String,
-      required: true,
     },
     id_category: {
       type: mongoose.Schema.Types.ObjectId,
@@ -19,7 +18,7 @@ const productSchema = new mongoose.Schema(
       ref: "sellers",
     },
     picture: {
-      type: String,
+      type: [String],
       required: true,
     },
     price: {

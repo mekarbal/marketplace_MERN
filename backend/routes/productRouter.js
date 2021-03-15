@@ -6,9 +6,9 @@ const {
   productDeleted,
   getOneProduct,
 } = require("../controllers/productController");
-
+const {upload}=require("../middleware/uploadFiles")
 router.get("/", getAllProducts);
-router.post("/", productRegister);
+router.post("/",upload.array('picture',3), productRegister);
 router.put("/:id", productUpdated);
 router.delete("/", productDeleted);
 router.get("/:id", getOneProduct);

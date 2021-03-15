@@ -15,9 +15,18 @@ exports.categoryRegisterer = async (req, res, next) => {
 exports.categoryDelete = async (req, res, next) => {
   try {
     const categoryDelete = await Category.deleteOne({
-      _id: req.params.id
+      _id: req.params.id,
     });
     res.status(201).send(categoryDelete);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+};
+
+exports.getOneCat = async (req, res, next) => {
+  try {
+    const category = await Category.findById({ _id: req.params.id });
+    res.status(200).send(category);
   } catch (error) {
     res.status(400).send({ message: error.message });
   }

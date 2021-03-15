@@ -6,30 +6,41 @@ const {
   buyerValidations,
   loginValidations,
 } = require("./validations/dataValidations");
+const { sendMail } = require("./validations/methods");
 
 exports.buyerRegister = async (req, res, next) => {
-  const { error } = buyerValidations(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
-  const emailExist = await Buyer.findOne({ email: req.body.email });
-  if (emailExist) return res.status(400).send("Email already exist");
-
-  const salt = await bcrypt.genSalt(10);
-  const hashedPassword = await bcrypt.hash(req.body.password, salt);
-
-  const buyer = new Buyer({
-    full_name: req.body.full_name,
-    email: req.body.email,
-    isValid: false,
-    phone: req.body.phone,
-    password: hashedPassword,
-    address: req.body.address,
-  });
-
+  const { full_name, email, password, address, phone } = req.body;
   try {
-    const savedBuyer = await buyer.save();
-    res.send(savedBuyer);
+    const findEmail = await Buyer.findOne({ email });
+    if (findEmail) {
+      res.status(404).json({ message: "this email already signUp" });
+    } else {
+      bcrypt.hash(password, 10, (err, hash) => {
+        if (err) {
+          console.log(err);
+        } else {
+          const user = new Buyer({
+            full_name,
+            email,
+            password: hash,
+            phone,
+            address,
+          });
+          const token = jwt.sign(
+            { email: user.email, password: hash },
+            process.env.BUYER_TOKEN,
+            { expiresIn: "10m" }
+          );
+          sendMail(token);
+          user
+            .save()
+            .then((doc) => res.status(200).json({ doc, token }))
+            .catch((err) => console.log(err));
+        }
+      });
+    }
   } catch (error) {
-    res.status(400).send(error);
+    console.log(error);
   }
 };
 
@@ -52,18 +63,31 @@ exports.buyerLogin = async (req, res, next) => {
 };
 
 exports.validBuyer = async (req, res, next) => {
-  const token = req.header("auth-token");
-
-  const id_buyer = jwt.verify(token, process.env.BUYER_TOKEN)._id;
-
-  const buyer = await Buyer.findById({ _id: id_buyer });
-  res.send(buyer);
-  if (!buyer) {
-    res.status(404).send({ message: "Buyer not found" });
+  const token = req.params.token;
+  const decodeToken = jwt.verify(token, process.env.BUYER_TOKEN);
+  if (decodeToken) {
+    const { email, password } = decodeToken;
+    try {
+      const findUser = await Buyer.findOne({ email });
+      if (findUser) {
+        bcrypt.compare(password, findUser.password, (err, result) => {
+          if (err) {
+            console.log(err);
+          } else {
+            findUser
+              .updateOne({ isValid: true }, { new: true })
+              .then((doc) => res.status(202).json({ doc }))
+              .catch((err) => {
+                console.log(err);
+              });
+          }
+        });
+      }
+    } catch (error) {
+      console.log(error);
+    }
   } else {
-    buyer.isValid = true;
-    const validBuyer = await buyer.save();
-    res.status(201).send(validBuyer);
+    res.status(401).send("this link is expire");
   }
 };
 

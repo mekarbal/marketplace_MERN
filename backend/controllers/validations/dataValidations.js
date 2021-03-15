@@ -7,6 +7,7 @@ const sellerValidations = (data) => {
     phone: Joi.string().min(10).max(14).required(),
     password: Joi.string().min(6).required(),
     address: Joi.string().required(),
+    identity: Joi.string().required(),
   });
   return sellerValidation.validate(data);
 };
@@ -38,9 +39,6 @@ const adminValidations = (data) => {
   });
   return adminValidation.validate(data);
 };
-
-
-
 
 exports.sellerValidations = sellerValidations;
 exports.loginValidations = loginValidations;
