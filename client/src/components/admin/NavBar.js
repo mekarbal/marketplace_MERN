@@ -16,9 +16,12 @@ import ListItem from "@material-ui/core/ListItem";
 import ListItemIcon from "@material-ui/core/ListItemIcon";
 import ListItemText from "@material-ui/core/ListItemText";
 import CategoryIcon from "@material-ui/icons/Category";
-import { Link } from "react-router-dom";
-import Login from "./login/Login";
-
+import { Link, useHistory } from "react-router-dom";
+import AdminsLogin from "../AdminsLogin";
+import ExitToAppIcon from "@material-ui/icons/ExitToApp";
+import AccountCircleIcon from "@material-ui/icons/AccountCircle";
+import ImageIcon from "@material-ui/icons/Image";
+import jwt from "jwt-decode";
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -96,10 +99,17 @@ export default function NavBar() {
     setOpen(false);
   };
   const adminToken = localStorage.getItem("adminToken");
+  const isAdmin = jwt(adminToken).isAdmin;
+
+  let history = useHistory();
+  const logout = () => {
+    localStorage.removeItem("adminToken");
+    history.push("/admin/");
+  };
 
   return (
     <>
-      {adminToken ? (
+      {isAdmin || !isAdmin ? (
         <div className={classes.root}>
           <CssBaseline />
           <AppBar
@@ -149,14 +159,56 @@ export default function NavBar() {
             </div>
             <Divider />
             <List>
-              <Link to="/admin/category">
+              <Link to="/admin/categories">
                 <ListItem button>
                   <ListItemIcon>
                     <CategoryIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Add Category" />
+                  <ListItemText primary="Categories" />
                 </ListItem>
               </Link>
+              <Link to="/admin/buyers">
+                <ListItem button>
+                  <ListItemIcon>
+                    <AccountCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Buyers" />
+                </ListItem>
+              </Link>
+              <Link to="/admin/sellers">
+                <ListItem button>
+                  <ListItemIcon>
+                    <AccountCircleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Sellers" />
+                </ListItem>
+              </Link>
+              <Link to="/admin/ads">
+                <ListItem button>
+                  <ListItemIcon>
+                    <ImageIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Ads" />
+                </ListItem>
+              </Link>
+
+              {!isAdmin && (
+                <Link to="/admin/admins">
+                  <ListItem button>
+                    <ListItemIcon>
+                      <AccountCircleIcon />
+                    </ListItemIcon>
+                    <ListItemText primary="Admins" />
+                  </ListItem>
+                </Link>
+              )}
+
+              <ListItem button onClick={logout}>
+                <ListItemIcon>
+                  <ExitToAppIcon />
+                </ListItemIcon>
+                <ListItemText primary="Logout" />
+              </ListItem>
             </List>
             <Divider />
           </Drawer>
@@ -166,7 +218,7 @@ export default function NavBar() {
           </main>
         </div>
       ) : (
-        <Login />
+        <AdminsLogin />
       )}
     </>
   );

@@ -5,12 +5,16 @@ const {
   productUpdated,
   productDeleted,
   getOneProduct,
+  getAllProductsByUserId,
 } = require("../controllers/productController");
-const {upload}=require("../middleware/uploadFiles")
+
+const { uploadImage } = require("../middleware/uploadFiles");
+const { verifySeller } = require("../controllers/tokens/verificationAdmin");
 router.get("/", getAllProducts);
-router.post("/",upload.array('picture',3), productRegister);
+router.post("/",uploadImage.array("picture", 1), productRegister);
 router.put("/:id", productUpdated);
 router.delete("/", productDeleted);
 router.get("/:id", getOneProduct);
+router.get("/user/:id", getAllProductsByUserId);
 
 module.exports = router;

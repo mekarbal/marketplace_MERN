@@ -9,7 +9,7 @@ const {
 const { sendMail } = require("./validations/methods");
 
 exports.buyerRegister = async (req, res, next) => {
-  const { full_name, email, password, address, phone } = req.body;
+  const { full_name, email, password, address, phone, identity } = req.body;
   try {
     const findEmail = await Buyer.findOne({ email });
     if (findEmail) {
@@ -25,6 +25,8 @@ exports.buyerRegister = async (req, res, next) => {
             password: hash,
             phone,
             address,
+            identity,
+            isValid: false,
           });
           const token = jwt.sign(
             { email: user.email, password: hash },
@@ -34,7 +36,7 @@ exports.buyerRegister = async (req, res, next) => {
           sendMail(token);
           user
             .save()
-            .then((doc) => res.status(200).json({ doc, token }))
+            .then((doc) => res.status(200).json({ _id: user._id, token }))
             .catch((err) => console.log(err));
         }
       });
@@ -56,10 +58,10 @@ exports.buyerLogin = async (req, res, next) => {
 
   console.log(buyer);
   const token = jwt.sign(
-    { _id: buyer._id, email: buyer.email },
+    { _id: buyer._id, email: buyer.email, password: buyer.password },
     process.env.BUYER_TOKEN
   );
-  res.header("auth-token", token).send(token);
+  res.header("auth-token", token).send({ _id: buyer._id, token });
 };
 
 exports.validBuyer = async (req, res, next) => {
@@ -95,6 +97,23 @@ exports.getAllBuyers = async (req, res, next) => {
   try {
     const buyers = await Buyer.find();
     res.json(buyers);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getBuyerById = async (req, res, next) => {
+  try {
+    const buyer = await Buyer.findOne({ _id: req.params.id });
+    res.json(buyer);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+exports.deleteBuyerById = async (req, res, next) => {
+  try {
+    const buyer = await Buyer.deleteOne({ _id: req.params.id });
+    res.json(buyer);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

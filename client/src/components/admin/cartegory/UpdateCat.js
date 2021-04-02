@@ -49,6 +49,7 @@ export default function AddCategory(props) {
           props.history.push("/admin/category");
           setSucc("Category updated");
           setCategory("");
+          
         })
         .catch((err) => {
           setErr(err);

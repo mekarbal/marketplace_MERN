@@ -40,6 +40,13 @@ const adminValidations = (data) => {
   return adminValidation.validate(data);
 };
 
+exports.superAdminValidationSchema = Joi.object({
+  full_name: Joi.string().min(6).required(),
+  email: Joi.string().email().required(),
+  phone: Joi.string().min(10).max(14).required(),
+  password: Joi.string().min(6).required(),
+});
+
 exports.sellerValidations = sellerValidations;
 exports.loginValidations = loginValidations;
 exports.buyerValidations = buyerValidations;

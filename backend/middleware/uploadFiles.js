@@ -8,13 +8,13 @@ const storage = multer.diskStorage({
     cb(null, new Date().toISOString().replace(/:/g, "-") + file.originalname);
   },
 });
-const upload = multer({
+const uploadImage = multer({
   storage: storage,
   limits: {
     fileSize: 600000,
   },
   fileFilter(req, file, cb) {
-    if (file.mimetype === "image/png") {
+    if (file.mimetype === "image/png" || "image/jpg") {
       cb(null, true);
     } else {
       cb(new Error("Please upload an image."));
@@ -22,4 +22,4 @@ const upload = multer({
   },
 });
 
-module.exports = { upload };
+module.exports = { uploadImage };

@@ -10,8 +10,9 @@ exports.getAllAds = async (req, res, next) => {
 };
 
 exports.adsRegister = async (req, res, next) => {
+  console.log(req.files);
   const ads = new Ads({
-    picture: req.body.picture,
+    picture: req.files[0].filename,
     pricing: req.body.pricing,
     startDate: req.body.startDate,
     endDate: req.body.endDate,

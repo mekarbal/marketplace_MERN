@@ -35,7 +35,10 @@ const sellerSchema = new mongoose.Schema(
     },
     identity: {
       type: String,
-      required: true,
+    },
+    is_password_reset: {
+      type: Boolean,
+      default: false,
     },
   },
   {

@@ -33,7 +33,7 @@ export default function AddCategory() {
   const [category, setCategory] = useState("");
   const [err, setErr] = useState("");
   const [succ, setSucc] = useState("");
-
+  let token = localStorage.getItem("adminToken");
   const addCategory = async (e) => {
     e.preventDefault();
 
@@ -42,7 +42,13 @@ export default function AddCategory() {
       setSucc("");
     } else {
       await axios
-        .post("http://localhost:4000/category/", { name: category })
+        .post(
+          "http://localhost:4000/category/",
+          { name: category },
+          {
+            headers: { "auth-token": token },
+          }
+        )
         .then(() => {
           setErr("");
           setSucc("Category added");

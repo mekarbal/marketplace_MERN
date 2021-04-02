@@ -6,15 +6,18 @@ const {
   validSeller,
   getAllSellers,
   sellerPack,
+  getSellerById,
 } = require("../controllers/sellerController");
 
-const verify = require("../controllers/tokens/verficationSeller");
+const { verifySeller } = require("../controllers/tokens/verificationAdmin");
+const { verifyAdmin } = require("../controllers/tokens/verificationAdmin");
 
 router.post("/", sellerRegister);
-router.get("/sellers", getAllSellers);
-router.patch("/update", verify, resetPassword);
+router.get("/", verifyAdmin, getAllSellers);
+router.patch("/update", verifySeller, resetPassword);
 router.post("/login", sellerLogin);
-router.patch("/valid", verify, validSeller);
+router.patch("/valid/:id", verifyAdmin, validSeller);
+router.get("/:id", getSellerById);
 router.patch("/upgrade", sellerPack);
 
 module.exports = router;

@@ -33,8 +33,6 @@ export default function Login(props) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   const signIn = async (e) => {
     e.preventDefault();
@@ -46,7 +44,7 @@ export default function Login(props) {
       .then((response) => {
         console.log(response);
         localStorage.setItem("adminToken", response.data);
-        // props.history.push("/admin/category");
+
         <Redirect to="/admin/category" />;
       })
       .catch((err) => {

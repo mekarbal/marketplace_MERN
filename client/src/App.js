@@ -1,19 +1,20 @@
-import NavBar from "./components/admin/NavBar";
 import "./App.css";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import Categories from "./components/admin/cartegory/Categories";
-import AddCategory from "./components/admin/cartegory/AddCategory";
-import UpdateCat from "./components/admin/cartegory/UpdateCat";
+import AdminDashboard from "./components/AdminDashboard";
+import MarketPlace from "./components/MarketPlace";
+import SellerDashboard from "./components/SellerDashboard";
+import SellerProfile from "./components/SellerProfile";
 function App() {
   return (
-    <div className="App">
+    <div className="App mb-5">
       <Router>
-        <NavBar />
-
         <Switch>
-          <Route path="/admin/category" component={Categories}></Route>
-          <Route path="/admin/addcategory" component={AddCategory}></Route>
-          <Route path="/admin/category/:id" component={UpdateCat}></Route>
+          <Route path="/seller/"  component={SellerProfile}></Route>
+          <Route path="/login" component={MarketPlace}></Route>
+          <Route path="/regiter" component={MarketPlace}></Route>
+          <Route path="/user/:id" component={MarketPlace}></Route>
+          <Route path="/seller/:id" component={MarketPlace}></Route>
+          <Route path="/admin/" component={AdminDashboard}></Route>
         </Switch>
       </Router>
     </div>

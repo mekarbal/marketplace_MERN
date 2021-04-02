@@ -1,0 +1,25 @@
+import React from "react";
+import { Route } from "react-router";
+import NavBar from "./admin/NavBar";
+import UpdateCat from "./admin/cartegory/UpdateCat";
+import Categories from "./admin/cartegory/Categories";
+import Buyers from "./admin/Buyers";
+import Sellers from "./admin/Sellers";
+import Ads from "./admin/ads/Ads";
+import Admins from "./admin/Admins";
+
+const AdminDashboard = () => {
+  return (
+    <div className="mb-5">
+      <NavBar />
+      <Route path="/admin/categories" component={Categories}></Route>
+      <Route path="/admin/category/:id" component={UpdateCat}></Route>
+      <Route path="/admin/buyers" component={Buyers}></Route>
+      <Route path="/admin/sellers" component={Sellers}></Route>
+      <Route path="/admin/ads" component={Ads}></Route>
+      <Route path="/admin/admins" component={Admins}></Route>
+    </div>
+  );
+};
+
+export default AdminDashboard;

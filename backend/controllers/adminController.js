@@ -8,8 +8,8 @@ const {
 } = require("./validations/dataValidations");
 
 exports.adminRegister = async (req, res, next) => {
-  const { error } = adminValidations(req.body);
-  if (error) return res.status(400).send(error.details[0].message);
+  // const { error } = adminValidations(req.body);
+  // if (error) return res.status(400).send(error.details[0].message);
   const emailExist = await Admin.findOne({ email: req.body.email });
   if (emailExist) return res.status(400).send("Email already exist");
 
@@ -43,9 +43,8 @@ exports.adminLogin = async (req, res, next) => {
   const validPass = await bcrypt.compare(req.body.password, admin.password);
   if (!validPass) return res.status(400).send("Invalid password");
 
-  console.log(admin);
   const token = jwt.sign(
-    { _id: admin._id, email: admin.email },
+    { _id: admin._id, email: admin.email, isAdmin: admin.isAdmin },
     process.env.ADMIN_TOKEN
   );
   res.header("auth-token", token).send(token);
@@ -65,9 +64,8 @@ exports.deleteAdmin = async (req, res, next) => {
 
   if (!admin) {
     res.status(404).send("Admin Not Found");
-  }
-  else{
-    const admindeleted= await admin.deleteOne()
-    res.send(admindeleted)
+  } else {
+    const admindeleted = await admin.deleteOne();
+    res.send(admindeleted);
   }
 };
