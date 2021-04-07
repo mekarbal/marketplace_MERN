@@ -39,7 +39,7 @@ function Orders() {
   let token = localStorage.getItem("adminToken");
   const getAllOrders = async (page) => {
     await axios
-      .get(`http://localhost:4000/order/dataOrder?page=${page}&limit=3`, {
+      .get(`http://localhost:4000/order`, {
         headers: {
           "auth-token": token,
         },
@@ -82,6 +82,7 @@ function Orders() {
       <Table hover>
         <thead>
           <tr>
+            <th> Product</th>
             <th> Name</th>
             <th> Phone</th>
             <th> Address</th>
@@ -94,6 +95,7 @@ function Orders() {
           {orders.map((item) => {
             return (
               <tr key={item._id}>
+                <td>{item.product[0].name}</td>
                 <td>{item.full_name}</td>
                 <td>{item.address}</td>
                 <td>{item.phone}</td>

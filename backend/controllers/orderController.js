@@ -27,7 +27,18 @@ exports.addOrder = async (req, res, next) => {
 };
 exports.getAllOrders = async (req, res, next) => {
   try {
-    const orders = await Order.find();
+    // const orders = await Order.find();
+    const orders = await Order.aggregate([
+      // { $match: { id_buyer: mongoose.Types.ObjectId(req.params.id) } },
+      {
+        $lookup: {
+          from: "products",
+          localField: "id_product",
+          foreignField: "_id",
+          as: "product",
+        },
+      },
+    ]);
     res.status(200).send(orders);
   } catch (error) {
     res.status(404).send({ message: error.message });
