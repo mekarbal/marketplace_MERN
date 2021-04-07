@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Redirect } from "react";
+import React, { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import axios from "axios";
 import CheckIcon from "@material-ui/icons/Check";
@@ -83,6 +83,7 @@ function Orders() {
         <thead>
           <tr>
             <th> Product</th>
+            <th> Product Image</th>
             <th> Name</th>
             <th> Phone</th>
             <th> Address</th>
@@ -96,6 +97,12 @@ function Orders() {
             return (
               <tr key={item._id}>
                 <td>{item.product[0].name}</td>
+                <td align="center">
+                  <img
+                    src={`/uploads/${item.product[0].picture[0]}`}
+                    style={{ width: "40px", height: "40px" }}
+                  />
+                </td>
                 <td>{item.full_name}</td>
                 <td>{item.address}</td>
                 <td>{item.phone}</td>

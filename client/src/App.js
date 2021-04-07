@@ -16,6 +16,9 @@ function App() {
           <Route path="/admin/" component={AdminDashboard}></Route>
           <Route path="/seller/" exact component={SellerProfile}></Route>
           <Route path="/seller/profile" exact component={SellerProfile}></Route>
+          <Route path="/seller/st" component={SellerProfile}></Route>
+          <Route path="/seller/products" component={SellerProfile}></Route>
+          <Route path="/seller/pack" component={SellerProfile}></Route>
           <Route
             path="/seller/resetPassword/:id"
             exact
