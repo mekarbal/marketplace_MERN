@@ -7,9 +7,9 @@ import "./bootstrap/bootstrap.min.css";
 import "react-toastify/dist/ReactToastify.css";
 
 ReactDOM.render(
-  <React.StrictMode>
+  <>
     <App />
-  </React.StrictMode>,
+  </>,
   document.getElementById("root")
 );
 

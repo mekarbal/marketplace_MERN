@@ -2,7 +2,9 @@ import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col } from "react-bootstrap";
 import axios from "axios";
 import jwt from "jwt-decode";
+import { toast } from "react-toastify";
 
+toast.configure();
 const AddProduct = () => {
   const [price, setPrice] = useState("");
   const [productName, setProductName] = useState("");
@@ -13,13 +15,14 @@ const AddProduct = () => {
   const [err, setErr] = useState("");
   let token = localStorage.getItem("sellerToken");
   const _idSeller = jwt(token)._id;
+  const isValid = jwt(token).isValid;
   const getAllCategories = async () => {
     await axios
       .get("http://localhost:4000/category")
       .then((res) => {
         setCategories(res.data);
       })
-      .catch((err) => setErr(err.response.data));
+      .catch((err) => toast.success(err.response.data));
   };
 
   useEffect(() => {
@@ -36,28 +39,31 @@ const AddProduct = () => {
     formData.append("price", price);
     formData.append("description", description);
 
-    console.log(formData.get("picture"));
-
-    await axios
-      .post("http://localhost:4000/product/", formData, {
-        headers: {
-          "auth-token": token,
-        },
-      })
-      .then((response) => {
-        setPrice("");
-        setDescription("");
-        setProductName("");
-        setPicture("");
-      })
-      .catch((err) => console.log(err.response.data));
+    if (isValid) {
+      await axios
+        .post("http://localhost:4000/product/", formData, {
+          headers: {
+            "auth-token": token,
+          },
+        })
+        .then((response) => {
+          console.log(response);
+          setPrice("");
+          setDescription("");
+          setProductName("");
+          setPicture("");
+          toast.success(response.data);
+        })
+        .catch((err) => toast.error(err.response.data));
+    } else {
+      toast.error("Your Account is Not Valid, An Admin will validate it ASAP ");
+    }
   };
   return (
     <>
       <Row className="justify-content-center bordred">
         <Col md={8}>
-          <h1>Sign Up</h1>
-
+          <h1>Add Product</h1>
           <Form onSubmit={submitHandler}>
             <Form.Group controlId="productName">
               <Form.Label>Name</Form.Label>
@@ -79,6 +85,7 @@ const AddProduct = () => {
                 onChange={(e) => setPrice(e.target.value)}
               ></Form.Control>
             </Form.Group>
+            <Form.Group controlId="stock"></Form.Group>
             <Form.Group controlId="description">
               <Form.Label>Description</Form.Label>
               <Form.Control

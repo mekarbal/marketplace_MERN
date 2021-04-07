@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import Button from "@material-ui/core/Button";
 import axios from "axios";
 import TextField from "@material-ui/core/TextField";
@@ -34,7 +34,7 @@ export default function AddCategory(props) {
   const [category, setCategory] = useState("");
   const [err, setErr] = useState("");
   const [succ, setSucc] = useState("");
-
+  let token = localStorage.getItem("adminToken");
   const updateCategory = async (e) => {
     e.preventDefault();
 
@@ -43,13 +43,18 @@ export default function AddCategory(props) {
       setSucc("");
     } else {
       await axios
-        .put("http://localhost:4000/category/" + id, { name: category })
+        .put(
+          "http://localhost:4000/category/" + id,
+          { name: category },
+          {
+            headers: { "auth-token": token },
+          }
+        )
         .then(() => {
           setErr("");
-          props.history.push("/admin/category");
+          props.history.push("/admin/categories");
           setSucc("Category updated");
           setCategory("");
-          
         })
         .catch((err) => {
           setErr(err);

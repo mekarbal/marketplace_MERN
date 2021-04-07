@@ -17,7 +17,9 @@ async function sendMail(token) {
     output = `<h2>congratulation</h2>
    
    <div>congratulation  your account is created click to links for validate
-   <a>${process.env.CLIENT_URL + "user/account/validate/" + token}</a>
+   <a href=${
+     process.env.CLIENT_URL + "buyer/account/validate/" + token
+   }>Validate Your Account</a>
    </div>
    `;
   }

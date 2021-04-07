@@ -6,11 +6,14 @@ const {
   getAllBuyers,
   getBuyerById,
   deleteBuyerById,
+  getBuyerPagin,
 } = require("../controllers/buyerController");
 const { verifyAdmin } = require("../controllers/tokens/verificationAdmin");
+
 router.post("/", buyerRegister);
 router.post("/login", buyerLogin);
-router.patch("/valid", verifyAdmin, validBuyer);
+router.patch("/valid", validBuyer);
+router.get("/dataBuyer", verifyAdmin, getBuyerPagin);
 router.get("/account/validate/:token", verifyAdmin, validBuyer);
 router.get("/:id", getBuyerById);
 router.get("/", verifyAdmin, getAllBuyers);

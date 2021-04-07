@@ -2,20 +2,20 @@ import React, { useEffect, useState } from "react";
 import { Container, Nav, Navbar } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 import { HelmetProvider } from "react-helmet-async";
-import { Redirect } from "react-router";
-const Header = ({ history }) => {
-  let [token, setToken] = useState("");
-  const tokenFromStorage = localStorage.getItem("buyerToken");
-  const sellerToken = localStorage.getItem("sellerToken");
-
+import { Redirect, useHistory } from "react-router";
+const Header = () => {
+  const history = useHistory();
+  const buyer = localStorage.getItem("buyerToken");
   useEffect(() => {
-    tokenFromStorage !== undefined && setToken(tokenFromStorage);
-    if (token) {
+    if (!buyer) {
+      <Redirect to={"/login"} />;
+    } else {
       <Redirect to={"/"} />;
     }
-  }, [token, history]);
+  }, [buyer, history]);
 
-  const logout = () => {
+  const logout = (e) => {
+    e.preventDefault();
     localStorage.clear();
     history.push("/");
   };
@@ -28,10 +28,17 @@ const Header = ({ history }) => {
             <Navbar.Brand>YouCode MarketPlace</Navbar.Brand>
           </LinkContainer>
           <Nav className="ml-auto">
-            {token || sellerToken ? (
-              <LinkContainer onClick={logout} to="/">
-                <Nav.Link>logout</Nav.Link>
-              </LinkContainer>
+            {buyer ? (
+              <>
+                {buyer && (
+                  <LinkContainer to="/user">
+                    <Nav.Link>Profile</Nav.Link>
+                  </LinkContainer>
+                )}
+                <LinkContainer onClick={logout} to="/">
+                  <Nav.Link>logout</Nav.Link>
+                </LinkContainer>
+              </>
             ) : (
               <LinkContainer to="/login">
                 <Nav.Link>SignIn/Sign Up</Nav.Link>

@@ -3,15 +3,39 @@ import Table from "react-bootstrap/Table";
 import axios from "axios";
 import DeleteIcon from "@material-ui/icons/Delete";
 import Alert from "@material-ui/lab/Alert";
-import { useHistory } from "react-router-dom";
+
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import { IconButton, makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(2),
+      width: "35ch",
+    },
+  },
+}));
+
 function Buyers() {
-  let history = useHistory();
   const [buyers, setBuyers] = useState([]);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const classes = useStyles();
+  const next = () => {
+    setPage(page + 1);
+    getAllBuyers(page);
+  };
+  const prev = () => {
+    if (page !== 1) {
+      setPage(page - 1);
+      getAllBuyers(page);
+    }
+  };
   let token = localStorage.getItem("adminToken");
   const getAllBuyers = async () => {
     await axios
-      .get("http://localhost:4000/buyer", {
+      .get(`http://localhost:4000/buyer/dataBuyer?page=${page}&limit=3`, {
         headers: {
           "auth-token": token,
         },
@@ -31,20 +55,20 @@ function Buyers() {
         },
       })
       .then(() => {
-        getAllBuyers();
+        getAllBuyers(page);
       })
       .catch((err) => setError(err));
   };
 
   useEffect(() => {
-    getAllBuyers();
-  }, [buyers]);
+    getAllBuyers(page);
+  }, [buyers, page]);
 
   return (
     <div className="container">
       <h1 className="justify-content-center">All Buyers</h1>
       {error && <Alert variant="danger">{error}</Alert>}
-      <Table striped bordered hover>
+      <Table   hover>
         <thead>
           <tr>
             <th>Buyer Name</th>
@@ -74,6 +98,25 @@ function Buyers() {
           })}
         </tbody>
       </Table>
+      <div className="pagination mb-5">
+        <IconButton
+          aria-label="delete"
+          className={classes.margin}
+          size="small"
+          onClick={prev}
+        >
+          <ArrowBackIosIcon fontSize="inherit" />
+        </IconButton>
+        <p>Page : {page}</p>
+        <IconButton
+          aria-label="delete"
+          className={classes.margin}
+          size="small"
+          onClick={next}
+        >
+          <ArrowForwardIosIcon fontSize="inherit" />
+        </IconButton>
+      </div>
     </div>
   );
 }

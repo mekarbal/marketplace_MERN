@@ -30,8 +30,7 @@ exports.buyerRegister = async (req, res, next) => {
           });
           const token = jwt.sign(
             { email: user.email, password: hash },
-            process.env.BUYER_TOKEN,
-            { expiresIn: "10m" }
+            process.env.BUYER_TOKEN
           );
           sendMail(token);
           user
@@ -61,12 +60,15 @@ exports.buyerLogin = async (req, res, next) => {
     { _id: buyer._id, email: buyer.email, password: buyer.password },
     process.env.BUYER_TOKEN
   );
-  res.header("auth-token", token).send({ _id: buyer._id, token });
+  res
+    .header("auth-token", token)
+    .send({ _id: buyer._id, token, isValid: buyer.isValid });
 };
 
 exports.validBuyer = async (req, res, next) => {
   const token = req.params.token;
   const decodeToken = jwt.verify(token, process.env.BUYER_TOKEN);
+
   if (decodeToken) {
     const { email, password } = decodeToken;
     try {
@@ -116,5 +118,18 @@ exports.deleteBuyerById = async (req, res, next) => {
     res.json(buyer);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+exports.getBuyerPagin = async (req, res) => {
+  const { page, limit } = req.query;
+  try {
+    const buyers = await Buyer.find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+    res.send(buyers);
+  } catch (error) {
+    res.send(error);
   }
 };

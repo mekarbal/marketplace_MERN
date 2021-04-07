@@ -27,6 +27,7 @@ const Register = ({ history }) => {
   const [address, setAddress] = useState("");
   const [identity, setIdentity] = useState("");
   const [typeLogin, setTypeLogin] = useState("");
+  const [err, setErr] = useState("");
 
   const data = {
     full_name,
@@ -45,20 +46,20 @@ const Register = ({ history }) => {
         .then((res) => {
           notify();
           localStorage.setItem("sellerToken", res.data.token);
+          history.push("/login");
         })
         .catch((err) => {
-          console.log(err);
+          setErr(err.response.data);
         });
     } else {
       await axios
         .post("http://localhost:4000/buyer/", data)
         .then((res) => {
-          localStorage.setItem("buyerToken", res.data.token);
           console.log(res);
-          history.push("/user/" + res.data._id);
+          history.push("/login");
         })
         .catch((err) => {
-          console.log(err);
+          setErr(err.response.data);
         });
     }
   };

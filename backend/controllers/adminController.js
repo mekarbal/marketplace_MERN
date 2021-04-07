@@ -65,7 +65,19 @@ exports.deleteAdmin = async (req, res, next) => {
   if (!admin) {
     res.status(404).send("Admin Not Found");
   } else {
-    const admindeleted = await admin.deleteOne();
+    const admindeleted = await Admin.deleteOne();
     res.send(admindeleted);
+  }
+};
+exports.getAdminsPagin = async (req, res) => {
+  const { page, limit } = req.query;
+  try {
+    const admins = await Admin.find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+    res.send(admins);
+  } catch (error) {
+    res.send(error);
   }
 };

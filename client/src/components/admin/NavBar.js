@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import clsx from "clsx";
 import { makeStyles, useTheme } from "@material-ui/core/styles";
 import Drawer from "@material-ui/core/Drawer";
@@ -98,13 +98,22 @@ export default function NavBar() {
   const handleDrawerClose = () => {
     setOpen(false);
   };
-  const adminToken = localStorage.getItem("adminToken");
-  const isAdmin = jwt(adminToken).isAdmin;
-
   let history = useHistory();
+  const [isAdmin, setIsAdmin] = useState(undefined);
+  let adminToken = localStorage.getItem("adminToken");
+
+  useEffect(() => {
+    if (adminToken) {
+      let isAdmin = jwt(adminToken).isAdmin;
+      setIsAdmin(isAdmin);
+    } else {
+      history.push("/");
+    }
+  }, []);
+
   const logout = () => {
     localStorage.removeItem("adminToken");
-    history.push("/admin/");
+    history.push("/admin/login");
   };
 
   return (
@@ -189,6 +198,22 @@ export default function NavBar() {
                     <ImageIcon />
                   </ListItemIcon>
                   <ListItemText primary="Ads" />
+                </ListItem>
+              </Link>
+              <Link to="/admin/orders">
+                <ListItem button>
+                  <ListItemIcon>
+                    <ImageIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Orders" />
+                </ListItem>
+              </Link>
+              <Link to="/admin/deliverymen">
+                <ListItem button>
+                  <ListItemIcon>
+                    <ImageIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Delivery Men" />
                 </ListItem>
               </Link>
 

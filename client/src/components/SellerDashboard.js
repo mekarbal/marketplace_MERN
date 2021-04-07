@@ -159,7 +159,7 @@ export default function SellerDashboard() {
             </div>
             <Divider />
             <List>
-              <Link to="/seller/">
+              <Link to="/seller/profile">
                 <ListItem button>
                   <ListItemIcon>
                     <CategoryIcon />
@@ -183,12 +183,12 @@ export default function SellerDashboard() {
                   <ListItemText primary="Products" />
                 </ListItem>
               </Link>
-              <Link to="/admin/ads">
+              <Link to="/seller/pack">
                 <ListItem button>
                   <ListItemIcon>
-                    <ImageIcon />
+                    <AccountCircleIcon />
                   </ListItemIcon>
-                  <ListItemText primary="Ads" />
+                  <ListItemText primary="Pack" />
                 </ListItem>
               </Link>
 

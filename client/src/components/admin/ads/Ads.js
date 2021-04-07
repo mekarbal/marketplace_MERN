@@ -4,14 +4,39 @@ import axios from "axios";
 import CheckIcon from "@material-ui/icons/Check";
 import Alert from "@material-ui/lab/Alert";
 import AddAds from "./AddAds";
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import { IconButton, makeStyles } from "@material-ui/core";
+
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(2),
+      width: "35ch",
+    },
+  },
+}));
+
 function Ads({ history }) {
   const [ads, setAds] = useState([]);
   const [error, setError] = useState("");
+  const [page, setPage] = useState(1);
+  const classes = useStyles();
+  const next = () => {
+    setPage(page + 1);
+    getAllAds(page);
+  };
+  const prev = () => {
+    if (page !== 1) {
+      setPage(page - 1);
+      getAllAds(page);
+    }
+  };
   let token = localStorage.getItem("adminToken");
 
   const getAllAds = async () => {
     await axios
-      .get("http://localhost:4000/ads", {
+      .get(`http://localhost:4000/ads/dataAds/?page=${page}&limit=3`, {
         headers: {
           "auth-token": token,
         },
@@ -23,17 +48,16 @@ function Ads({ history }) {
   };
 
   useEffect(() => {
-    getAllAds();
+    getAllAds(page);
     !token && history.push("/admin/");
-
-  }, [ads, token]);
+  }, [ads, page, token]);
 
   return (
     <div className="container mb-5">
       <AddAds />
       <h1 className="justify-content-center mt-5">All Ads</h1>
       {error && <Alert variant="danger">{error}</Alert>}
-      <Table striped bordered hover>
+      <Table   hover>
         <thead>
           <tr>
             <th>Ads Price</th>
@@ -60,6 +84,25 @@ function Ads({ history }) {
           })}
         </tbody>
       </Table>
+      <div className="pagination mb-5">
+        <IconButton
+          aria-label="delete"
+          className={classes.margin}
+          size="small"
+          onClick={prev}
+        >
+          <ArrowBackIosIcon fontSize="inherit" />
+        </IconButton>
+        <p>Page : {page}</p>
+        <IconButton
+          aria-label="delete"
+          className={classes.margin}
+          size="small"
+          onClick={next}
+        >
+          <ArrowForwardIosIcon fontSize="inherit" />
+        </IconButton>
+      </div>
     </div>
   );
 }

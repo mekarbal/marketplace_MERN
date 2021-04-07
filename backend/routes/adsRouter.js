@@ -4,10 +4,11 @@ const { verifyAdmin } = require("../controllers/tokens/verificationAdmin");
 const {
   getAllAds,
   adsRegister,
-  adsDelete,
+  adsDelete,getAdsPagin
 } = require("../controllers/adsController");
 const { uploadImage } = require("../middleware/uploadFiles");
-router.get("/", verifyAdmin, getAllAds);
+router.get("/dataAds/", getAdsPagin);
+router.get("/", getAllAds);
 router.post("/", [uploadImage.array("picture", 1), verifyAdmin], adsRegister);
 router.delete("/", adsDelete);
 

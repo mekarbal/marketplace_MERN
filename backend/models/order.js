@@ -15,11 +15,30 @@ const orderSchema = new mongoose.Schema(
       ref: "buyers",
     },
     totalPrice: {
-      type: String,
+      type: Number,
       required: true,
     },
     address: {
       type: String,
+    },
+    full_name: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: Number,
+      required: true,
+    },
+    country: {
+      type: String,
+      required: true,
+    },
+    city: {
+      type: String,
+      required: true,
+    },
+    isLivred: {
+      type: Boolean,
     },
   },
   {

@@ -7,7 +7,8 @@ import Buyers from "./admin/Buyers";
 import Sellers from "./admin/Sellers";
 import Ads from "./admin/ads/Ads";
 import Admins from "./admin/Admins";
-
+import Orders from "./admin/Orders";
+import DeliveryMen from "./admin/DeliveryMen";
 const AdminDashboard = () => {
   return (
     <div className="mb-5">
@@ -18,6 +19,8 @@ const AdminDashboard = () => {
       <Route path="/admin/sellers" component={Sellers}></Route>
       <Route path="/admin/ads" component={Ads}></Route>
       <Route path="/admin/admins" component={Admins}></Route>
+      <Route path="/admin/orders" component={Orders}></Route>
+      <Route path="/admin/deliverymen" component={DeliveryMen}></Route>
     </div>
   );
 };

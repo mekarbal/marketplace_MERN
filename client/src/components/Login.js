@@ -1,3 +1,4 @@
+import Alert from "@material-ui/lab/Alert";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import {
@@ -7,15 +8,19 @@ import {
   FormControl,
   FormGroup,
   FormLabel,
+  Row,
 } from "react-bootstrap";
 import { Link } from "react-router-dom";
-
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import FormContainer from "./FormContainer";
 
+toast.configure();
 const Login = ({ history }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [typeLogin, setTypeLogin] = useState("");
+  const [err, setErr] = useState("");
 
   const submitHandler = async (e) => {
     e.preventDefault();
@@ -31,12 +36,12 @@ const Login = ({ history }) => {
           localStorage.setItem("sellerToken", response.data.token);
 
           if (response.data.seller.is_password_reset === false) {
-            history.push("/seller/" + response.data.seller._id);
+            history.push("/seller/resetPassword/" + response.data.seller._id);
           } else {
             history.push("/seller/profile");
           }
         })
-        .catch((err) => console.log(err.response.data));
+        .catch((err) => setErr(err.response.data));
     } else {
       await axios
         .post("http://localhost:4000/buyer/login", {
@@ -44,11 +49,17 @@ const Login = ({ history }) => {
           password: password,
         })
         .then((response) => {
-          console.log(response);
-          localStorage.setItem("buyerToken", response.data);
-          history.push("/user/" + response.data._id);
+          console.log(response.data.token);
+          if (!response.data.isValid) {
+            localStorage.setItem("buyerToken", response.data.token);
+            toast.error("please check you email to valid your account");
+          } else {
+            localStorage.setItem("buyerToken", response.data.token);
+
+            history.push("/user");
+          }
         })
-        .catch((err) => console.log(err));
+        .catch((err) => setErr(err.response.data));
     }
   };
   return (
@@ -105,6 +116,7 @@ const Login = ({ history }) => {
           Register
         </Link>
       </Form>
+      <Row> {err && <span className="text-danger">{err} </span>}</Row>
     </FormContainer>
   );
 };

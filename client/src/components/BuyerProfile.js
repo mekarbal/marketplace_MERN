@@ -2,21 +2,36 @@ import Alert from "@material-ui/lab/Alert";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Button, Col, Container, Form, Row } from "react-bootstrap";
-
-const BuyerProfile = ({ match }) => {
-  const id = match.params.id;
+import jwt from "jwt-decode";
+import { Table } from "@material-ui/core";
+const BuyerProfile = () => {
   const [profile, setProfile] = useState({});
+  const [orders, setOrders] = useState([]);
   const [error, setError] = useState("");
+  const token = localStorage.getItem("buyerToken");
+  const _idB = jwt(token)._id;
+
+  const getAllOrders = async (id) => {
+    await axios
+      .get("http://localhost:4000/order/user/" + id)
+      .then((res) => {
+        setOrders(res.data);
+      })
+      .catch((err) => {
+        setError(err.response.data);
+      });
+  };
 
   useEffect(async () => {
     await axios
-      .get("http://localhost:4000/buyer/" + id)
+      .get("http://localhost:4000/buyer/" + _idB)
       .then((res) => {
         setProfile(res.data);
       })
       .catch((err) => {
         setError(err);
       });
+    await getAllOrders(_idB);
   }, [error, profile]);
   return (
     <>
@@ -82,7 +97,40 @@ const BuyerProfile = ({ match }) => {
               </Form.Group>
             </Form>
           </Col>
-          <Col md={6}>My Orders</Col>
+          <Col md={6}>
+            <h1>My Orders</h1>
+            <Table hover className="text-center">
+              <thead>
+                <tr>
+                  <th>Product</th>
+                  <th>Price</th>
+                  <th>image</th>
+                  <th>Is Livred</th>
+                </tr>
+              </thead>
+              <tbody>
+                {orders.map((item) => {
+                  return (
+                    <tr key={item._id}>
+                      {item.product.map((product) => (
+                        <>
+                          <td key={product._id}>{product.name}</td>
+                          <td>${product.price}</td>
+                          <td align="center">
+                            <img
+                              style={{ height: "40px", width: "40px" }}
+                              src={`/uploads/${product.picture[0]}`}
+                            />
+                          </td>
+                        </>
+                      ))}
+                      {item.isLivred ? <td>Livred</td> : <td>In Progress</td>}
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </Table>
+          </Col>
         </Row>
       </Container>
     </>

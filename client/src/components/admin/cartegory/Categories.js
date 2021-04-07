@@ -5,15 +5,39 @@ import DeleteIcon from "@material-ui/icons/Delete";
 import EditIcon from "@material-ui/icons/Edit";
 import AddCategory from "./AddCategory";
 import { useHistory } from "react-router-dom";
+import ArrowForwardIosIcon from "@material-ui/icons/ArrowForwardIos";
+import ArrowBackIosIcon from "@material-ui/icons/ArrowBackIos";
+import { IconButton, makeStyles } from "@material-ui/core";
+const useStyles = makeStyles((theme) => ({
+  root: {
+    "& > *": {
+      margin: theme.spacing(2),
+      width: "35ch",
+    },
+  },
+}));
 
 function Categories() {
-  let history=useHistory()
+  const classes = useStyles();
+  let history = useHistory();
   const [categories, setCategories] = useState([]);
+  const [page, setPage] = useState(1);
+
+  const next = () => {
+    setPage(page + 1);
+    getAllCategories(page);
+  };
+  const prev = () => {
+    if (page !== 1) {
+      setPage(page - 1);
+      getAllCategories(page);
+    }
+  };
   let token = localStorage.getItem("adminToken");
-    
-  const getAllCategories = async () => {
+
+  const getAllCategories = async (page) => {
     await axios
-      .get("http://localhost:4000/category", {
+      .get(`http://localhost:4000/category/dataCat/?page=${page}&limit=3`, {
         headers: {
           "auth-token": token,
         },
@@ -33,7 +57,7 @@ function Categories() {
         },
       })
       .then(() => {
-        getAllCategories();
+        getAllCategories(page);
       })
       .catch((err) => console.log(err));
   };
@@ -49,16 +73,16 @@ function Categories() {
 
   useEffect(() => {
     if (token) {
-      getAllCategories();
+      getAllCategories(page);
     } else {
       history.push("/admin/");
     }
-  }, [categories]);
+  }, [categories, page]);
 
   return (
     <div className="container">
       <AddCategory />
-      <Table striped bordered hover>
+      <Table bordered hover>
         <thead>
           <tr>
             <th>Category Name</th>
@@ -91,6 +115,25 @@ function Categories() {
           })}
         </tbody>
       </Table>
+      <div className="pagination mb-5">
+        <IconButton
+          aria-label="delete"
+          className={classes.margin}
+          size="small"
+          onClick={prev}
+        >
+          <ArrowBackIosIcon fontSize="inherit" />
+        </IconButton>
+        <p>Page : {page}</p>
+        <IconButton
+          aria-label="delete"
+          className={classes.margin}
+          size="small"
+          onClick={next}
+        >
+          <ArrowForwardIosIcon fontSize="inherit" />
+        </IconButton>
+      </div>
     </div>
   );
 }

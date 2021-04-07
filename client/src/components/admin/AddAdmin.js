@@ -84,7 +84,7 @@ export default function AddAdmin() {
       {succ && <Alert severity="success">{succ}</Alert>}
       <div className={classes.paper}>
         <Typography component="h1" variant="h5">
-          Category
+          Add Admin
         </Typography>
 
         <form className={classes.form}>

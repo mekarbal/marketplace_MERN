@@ -32,6 +32,7 @@ exports.sellerRegister = async (req, res, next) => {
           turnOver: 0,
           productsCount: 0,
           identity: req.body.identity,
+          isValid: false,
         });
         console.log(seller);
         try {
@@ -89,7 +90,7 @@ exports.sellerLogin = async (req, res, next) => {
     if (isMatch) {
       if (seller.is_password_reset) {
         const token = jwt.sign(
-          { email: seller.email, _id: seller._id, password: seller.password },
+          { email: seller.email, _id: seller._id, isValid: seller.isValid },
           process.env.SELLER_TOKEN
         );
         res.status(200).json({ seller, token });
@@ -159,5 +160,53 @@ exports.sellerPack = async (req, res, next) => {
     seller.turnOver += 20000;
     const updateSeller = await seller.save();
     res.status(201).send(updateSeller);
+  }
+};
+
+exports.turnOverUpdated = async (req, res, next) => {
+  const seller = await Seller.findById({ _id: req.params.id });
+
+  if (!seller) {
+    res.status(404).send({ message: "Seller not found" });
+  }
+
+  seller.turnOver += req.body.turnOver;
+
+  try {
+    const sellerUpdated = await seller.save();
+    res.status(201).send(sellerUpdated);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+};
+
+exports.turnOverTypeUpdated = async (req, res, next) => {
+  const seller = await Seller.findById({ _id: req.params.id });
+
+  if (!seller) {
+    res.status(404).send({ message: "Seller not found" });
+  }
+
+  seller.turnOver += req.body.turnOver;
+  seller.type = req.body.type;
+
+  try {
+    const sellerUpdated = await seller.save();
+    res.status(201).send(sellerUpdated);
+  } catch (error) {
+    res.status(400).send({ message: error.message });
+  }
+};
+
+exports.getSellerPagin = async (req, res) => {
+  const { page, limit } = req.query;
+  try {
+    const sellers = await Seller.find()
+      .limit(limit * 1)
+      .skip((page - 1) * limit)
+      .exec();
+    res.send(sellers);
+  } catch (error) {
+    res.send(error);
   }
 };

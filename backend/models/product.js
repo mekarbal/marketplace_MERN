@@ -24,6 +24,9 @@ const productSchema = new mongoose.Schema(
     price: {
       type: Number,
     },
+    isBuyed: {
+      type: Boolean,
+    },
   },
   {
     timestamps: true,
