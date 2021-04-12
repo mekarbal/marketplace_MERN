@@ -216,6 +216,14 @@ export default function NavBar() {
                   <ListItemText primary="Delivery Men" />
                 </ListItem>
               </Link>
+              <Link to="/admin/auctions">
+                <ListItem button>
+                  <ListItemIcon>
+                    <ImageIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Products Auctions" />
+                </ListItem>
+              </Link>
 
               {!isAdmin && (
                 <Link to="/admin/admins">

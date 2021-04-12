@@ -9,6 +9,7 @@ import Ads from "./admin/ads/Ads";
 import Admins from "./admin/Admins";
 import Orders from "./admin/Orders";
 import DeliveryMen from "./admin/DeliveryMen";
+import AddProductAuction from "./admin/AddProductAuction";
 const AdminDashboard = () => {
   return (
     <div className="mb-5">
@@ -21,6 +22,7 @@ const AdminDashboard = () => {
       <Route path="/admin/admins" component={Admins}></Route>
       <Route path="/admin/orders" component={Orders}></Route>
       <Route path="/admin/deliverymen" component={DeliveryMen}></Route>
+      <Route path="/admin/auctions" component={AddProductAuction}></Route>
     </div>
   );
 };

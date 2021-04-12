@@ -78,7 +78,7 @@ function Sellers() {
     <div className="container">
       <h1 className="justify-content-center">All Sellers</h1>
       {error && <Alert variant="danger">{error}</Alert>}
-      <Table   hover>
+      <Table hover>
         <thead>
           <tr>
             <th>Seller Name</th>

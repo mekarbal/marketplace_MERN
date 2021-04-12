@@ -35,6 +35,9 @@ const Header = () => {
                     <Nav.Link>Profile</Nav.Link>
                   </LinkContainer>
                 )}
+                <LinkContainer to="/echere">
+                  <Nav.Link>Enchere</Nav.Link>
+                </LinkContainer>
                 <LinkContainer onClick={logout} to="/">
                   <Nav.Link>logout</Nav.Link>
                 </LinkContainer>
