@@ -79,7 +79,6 @@ const Enchere = () => {
           createdAt: firebase.firestore.FieldValue.serverTimestamp(),
           givedPrice: givedPriceInt,
         });
-        console.log("registred");
       }
     }
   };

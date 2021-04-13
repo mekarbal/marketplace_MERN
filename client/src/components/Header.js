@@ -36,7 +36,7 @@ const Header = () => {
                   </LinkContainer>
                 )}
                 <LinkContainer to="/echere">
-                  <Nav.Link>Enchere</Nav.Link>
+                  <Nav.Link>Auctions</Nav.Link>
                 </LinkContainer>
                 <LinkContainer onClick={logout} to="/">
                   <Nav.Link>logout</Nav.Link>
