@@ -12,7 +12,22 @@ const Enchere = () => {
   const [buyer, setBuyer] = useState({});
   const [messages, setMessages] = useState([]);
   const [message, setMessage] = useState("");
-  const [product, setProduct] = useState({});
+  const [maxGivedPrice, setMaxGivedPrice] = useState([
+    {
+      buyerName: "",
+      createdAt: "",
+      givedPrice: 0,
+    },
+  ]);
+  const [timerSeconds, setTimerSeconds] = useState(0);
+  const [product, setProduct] = useState([
+    {
+      productName: "",
+      price: 0,
+      image: "",
+    },
+  ]);
+  const [givedPrice, setGivedPrice] = useState(0);
   let token = localStorage.getItem("buyerToken");
   let whatHas = jwt(token)._id;
 
@@ -45,6 +60,44 @@ const Enchere = () => {
       setMessage("");
     }
   };
+  let lastMaxPrice = maxGivedPrice && maxGivedPrice[0].givedPrice;
+
+  const saveGivedPrice = async (e) => {
+    e.preventDefault();
+
+    let givedPriceInt = parseInt(givedPrice);
+
+    if (givedPriceInt <= lastMaxPrice) {
+      toast.error(
+        `You need to enter more than ${lastMaxPrice} if you want to buy this product `
+      );
+      console.log("errror");
+    } else {
+      if (db) {
+        db.collection("finalBuyer").add({
+          buyerName: buyer.full_name,
+          createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+          givedPrice: givedPriceInt,
+        });
+        console.log("registred");
+      }
+    }
+  };
+
+  setTimeout(() => {
+    if (timerSeconds && timerSeconds > 0) {
+      console.log(timerSeconds);
+      setTimerSeconds(timerSeconds && timerSeconds - 1);
+
+      if (db) {
+        db.collection("timer")
+          .doc("o7t0WWewv0Bx3C00WhWo")
+          .update({
+            seconds: timerSeconds && timerSeconds - 1,
+          });
+      }
+    }
+  }, 1000);
 
   useEffect(() => {
     getUser(whatHas);
@@ -72,21 +125,78 @@ const Enchere = () => {
           }));
           setMessages(data);
         });
-      return allMessages;
+      const maxPrice = db
+        .collection("finalBuyer")
+        .orderBy("createdAt", "desc")
+        .limit(1)
+        .onSnapshot((querySnapshot) => {
+          const dataPrice = querySnapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id,
+          }));
+
+          setMaxGivedPrice(dataPrice);
+        });
     }
-  }, [db]);
-  // console.log(product);
+    const timer = db
+      .collection("timer")
+      .limit(1)
+      .onSnapshot((querySnapshot) => {
+        const dataTimer = querySnapshot.docs.map((doc) => ({
+          ...doc.data(),
+          id: doc.id,
+        }));
+
+        setTimerSeconds(dataTimer[0].seconds);
+      });
+  }, [db, maxGivedPrice]);
   return (
     <>
       <Row className="justify-content-center text-center mt-5">
         <Col md={6}>
-          <div key={product[0].id} className="">
-            <h3>{product[0].productName}</h3>
-            <div align="center" className="mt-5">
-              <img src={`${product[0].image}`} alt="" />
-            </div>
-            <h3 className="mt-5">${product[0].price}</h3>
-          </div>
+          {product.length > 0 ? (
+            <>
+              {timerSeconds > 0 ? (
+                <>
+                  {timerSeconds}
+                  <div key={product[0].id} className="">
+                    <h3>{product[0].productName}</h3>
+                    <div align="center" className="mt-5">
+                      <img src={`${product[0].image}`} alt="" />
+                    </div>
+                    <h3 className="mt-5">Init Price: ${product[0].price}</h3>
+                    <h3 className="mt-5">Gived Price: ${lastMaxPrice}</h3>
+                    <div className="form-group">
+                      <input
+                        type="number"
+                        name="givedPrice"
+                        id="givedPrice"
+                        value={givedPrice}
+                        onChange={(e) => setGivedPrice(e.target.value)}
+                      />
+                      <button
+                        type="submit"
+                        className="btn btn-primary ml-5"
+                        onClick={saveGivedPrice}
+                      >
+                        Add new Price
+                      </button>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <h1>
+                  {buyer.full_name === maxGivedPrice[0].buyerName ? (
+                    <h1>you are the winner</h1>
+                  ) : (
+                    <h1>the winner is {maxGivedPrice[0].buyerName}</h1>
+                  )}
+                </h1>
+              )}
+            </>
+          ) : (
+            <h1>there is no product here</h1>
+          )}
         </Col>
         <Col md={6}>
           <div className="--dark-theme" id="chat">
