@@ -100,6 +100,7 @@ exports.sellerLogin = async (req, res, next) => {
             is_password_reset: seller.is_password_reset,
             _id: seller._id,
             email: seller.email,
+            isValid: seller.isValid,
           },
           process.env.SELLER_TOKEN
         );

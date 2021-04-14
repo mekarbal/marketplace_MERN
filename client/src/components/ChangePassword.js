@@ -60,7 +60,7 @@ const ChangePassword = ({ history }) => {
             <Form.Group controlId="confirmPassword">
               <Form.Label>New Password</Form.Label>
               <Form.Control
-                type="text"
+                type="password"
                 placeholder={newPassword}
                 value={newPassword}
                 onChange={(e) => setnewPassword(e.target.value)}

@@ -41,7 +41,7 @@ const Login = ({ history }) => {
             history.push("/seller/profile");
           }
         })
-        .catch((err) => setErr(err.response.data));
+        .catch((err) => toast.error(err.response.data));
     } else {
       await axios
         .post("http://localhost:4000/buyer/login", {
@@ -59,7 +59,7 @@ const Login = ({ history }) => {
             history.push("/user");
           }
         })
-        .catch((err) => setErr(err.response.data));
+        .catch((err) => toast.error(err.response.data));
     }
   };
   return (
@@ -117,7 +117,6 @@ const Login = ({ history }) => {
         </Link>
       </Form>
       <Row> {err && <span className="text-danger">{err} </span>}</Row>
-      
     </FormContainer>
   );
 };

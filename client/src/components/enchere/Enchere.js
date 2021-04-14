@@ -84,15 +84,15 @@ const Enchere = () => {
   };
 
   setTimeout(() => {
-    if (timerSeconds && timerSeconds > 0) {
+    if (timerSeconds > 0) {
       console.log(timerSeconds);
-      setTimerSeconds(timerSeconds && timerSeconds - 1);
+      setTimerSeconds(timerSeconds - 1);
 
       if (db) {
         db.collection("timer")
           .doc("o7t0WWewv0Bx3C00WhWo")
           .update({
-            seconds: timerSeconds && timerSeconds - 1,
+            seconds: timerSeconds - 1,
           });
       }
     }
